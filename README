@@ -1,0 +1,7 @@
+This package provides a collection of Haskell FFI definitions for obtaining
+information about X11 visuals from Xlib, including a VisualInfo type and
+bindings for XGetVisualInfo() and XMatchVisualInfo(). These bindings are
+missing from the X11 package as of version 1.6.0.2.
+
+See man 3 XVisualInfo and http://tronche.com/gui/x/xlib/utilities/visual.html
+for details.

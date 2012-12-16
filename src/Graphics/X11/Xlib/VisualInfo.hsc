@@ -41,13 +41,12 @@ module Graphics.X11.Xlib.VisualInfo (
 import Foreign
 
 import Graphics.X11.Types
+import Graphics.X11.Xlib.Extras (xFree)
 import Graphics.X11.Xlib.Types
 
 #include <X11/Xutil.h>
 
 #let alignment t = "%lu", (unsigned long)offsetof(struct { char x; t (y); }, y)
-
-foreign import ccall unsafe "XFree" xFree :: Ptr a -> IO ()
 
 -- | Information about an X11 visual (see @man 3 XVisualInfo@)
 data VisualInfo = VisualInfo

@@ -39,6 +39,7 @@ module Graphics.X11.Xlib.VisualInfo (
   ) where
 
 import Foreign
+import Foreign.C.Types
 
 import Graphics.X11.Types
 import Graphics.X11.Xlib.Extras (xFree)
@@ -53,13 +54,13 @@ data VisualInfo = VisualInfo
   { visualInfo_visual :: Visual
   , visualInfo_visualID :: VisualID
   , visualInfo_screen :: ScreenNumber
-  , visualInfo_depth :: #type int
-  , visualInfo_class :: #type int
-  , visualInfo_redMask :: #type unsigned long
-  , visualInfo_greenMask :: #type unsigned long
-  , visualInfo_blueMask :: #type unsigned long
-  , visualInfo_colormapSize :: #type int
-  , visualInfo_bitsPerRGB :: #type int
+  , visualInfo_depth :: CInt
+  , visualInfo_class :: CInt
+  , visualInfo_redMask :: CULong
+  , visualInfo_greenMask :: CULong
+  , visualInfo_blueMask :: CULong
+  , visualInfo_colormapSize :: CInt
+  , visualInfo_bitsPerRGB :: CInt
   }
   deriving (Show)
 
@@ -119,7 +120,7 @@ instance Storable VisualInfo where
       ~(Visual visualPtr) = visualInfo_visual info
 
 -- | Visual information mask bits
-type VisualInfoMask = #{type long}
+type VisualInfoMask = CLong
 #{enum VisualInfoMask,
   , visualNoMask = VisualNoMask
   , visualIDMask = VisualIDMask
@@ -149,12 +150,12 @@ getVisualInfo dpy mask template
           return items
 
 foreign import ccall unsafe "XGetVisualInfo" xGetVisualInfo
-  :: Display -> VisualInfoMask -> Ptr VisualInfo -> Ptr #{type int}
+  :: Display -> VisualInfoMask -> Ptr VisualInfo -> Ptr CInt
   -> IO (Ptr VisualInfo)
 
 -- | An interface to the Xlib function @XMatchVisualInfo()@
-matchVisualInfo :: Display -> ScreenNumber -> #{type int} -> #{type int}
-  -> IO (Maybe VisualInfo)
+matchVisualInfo
+  :: Display -> ScreenNumber -> CInt -> CInt -> IO (Maybe VisualInfo)
 matchVisualInfo dpy screen depth class_
   = alloca $ \infoPtr -> do
     status <- xMatchVisualInfo dpy screen depth class_ infoPtr
@@ -165,5 +166,4 @@ matchVisualInfo dpy screen depth class_
         return $ Just info
 
 foreign import ccall unsafe "XMatchVisualInfo" xMatchVisualInfo
-  :: Display -> ScreenNumber -> #{type int} -> #{type int} -> Ptr VisualInfo
-  -> IO #{type Status}
+  :: Display -> ScreenNumber -> CInt -> CInt -> Ptr VisualInfo -> IO Status
